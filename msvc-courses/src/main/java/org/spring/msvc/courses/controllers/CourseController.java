@@ -1,17 +1,22 @@
 package org.spring.msvc.courses.controllers;
 
+import jakarta.servlet.ServletResponse;
+import jakarta.validation.Valid;
 import org.spring.msvc.courses.model.entity.Course;
 import org.spring.msvc.courses.repository.CourseRepository;
 import org.spring.msvc.courses.service.CourseService;
 import org.spring.msvc.courses.service.CourseServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -39,6 +44,30 @@ public class CourseController {
         return ResponseEntity.notFound().build();
     }
 
+    @PostMapping("/")
+    public ResponseEntity<?> createCourse(@Valid Course course, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return validate(bindingResult);
+        }
+
+        Course courseDb = courseService.save(course);
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseDb);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> updateCourse(@Valid Course course, BindingResult bindingResult, @PathVariable Long id, ServletResponse servletResponse) {
+        if (bindingResult.hasErrors()) {
+            return validate(bindingResult);
+        }
+        Optional<Course> courseOptional = courseService.findById(id);
+        if (courseOptional.isPresent()) {
+            Course courseDb = courseOptional.get();
+            courseDb.setName(course.getName());
+            return ResponseEntity.status(HttpStatus.CREATED).body(courseService.save(courseDb));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/{id}")
     public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
         Optional<Course> courseOptional = courseService.findById(id);
@@ -48,4 +77,14 @@ public class CourseController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    private static ResponseEntity<Map<String, String>> validate(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+        result.getFieldErrors().forEach(err -> {
+            errors.put(err.getField(), "El campo " + err.getField() + " " + err.getDefaultMessage());
+        });
+        return ResponseEntity.badRequest().body(errors);
+    }
+
 }
+

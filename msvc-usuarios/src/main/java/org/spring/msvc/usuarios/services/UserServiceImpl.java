@@ -1,7 +1,7 @@
-package org.spring.msvc.usuarios.repository;
+package org.spring.msvc.usuarios.services;
 
 import org.spring.msvc.usuarios.models.entity.User;
-import org.spring.msvc.usuarios.services.UserService;
+import org.spring.msvc.usuarios.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,4 +42,17 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsUserByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+
 }
