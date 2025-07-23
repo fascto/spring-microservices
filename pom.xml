@@ -11,6 +11,7 @@
 
     <modules>
         <module>msvc-usuarios</module>
+        <module>msvc-courses</module>
     </modules>
 
     <!-- Propiedades comunes a todos los módulos -->

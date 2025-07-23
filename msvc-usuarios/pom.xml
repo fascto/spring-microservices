@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Hereda de TU proyecto padre -->
+    <!-- Hereda proyecto padre -->
     <parent>
         <groupId>org.spring.fafi</groupId>
         <artifactId>proyecto-microservicios</artifactId>
@@ -15,8 +15,6 @@
     <name>msvc-usuarios</name>
     <description>Microservicio de usuarios</description>
 
-    <!-- No necesitas definir estas propiedades, ya vienen del padre -->
-    <!-- Las dependencias heredan las versiones del dependencyManagement del padre -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
