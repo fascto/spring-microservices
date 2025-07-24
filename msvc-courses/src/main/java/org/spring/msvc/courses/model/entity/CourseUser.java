@@ -1,0 +1,49 @@
+package org.spring.msvc.courses.model.entity;
+
+import jakarta.persistence.*;
+
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@Table(name = "courses_users")
+public class CourseUser {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_id", unique = true)
+    private Long userId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof CourseUser )) {
+            return false;
+        }
+
+        CourseUser courseUserObject = (CourseUser) object;
+        return this.userId != null && this.userId.equals(courseUserObject.userId);
+
+    }
+
+}

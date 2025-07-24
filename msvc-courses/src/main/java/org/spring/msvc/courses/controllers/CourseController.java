@@ -9,10 +9,7 @@ import org.spring.msvc.courses.service.CourseServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +20,6 @@ import java.util.Optional;
 public class CourseController {
 
     private final CourseService courseService;
-
-
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
@@ -45,7 +40,7 @@ public class CourseController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createCourse(@Valid Course course, BindingResult bindingResult) {
+    public ResponseEntity<?> createCourse(@Valid @RequestBody Course course, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return validate(bindingResult);
         }
@@ -54,8 +49,8 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseDb);
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@Valid Course course, BindingResult bindingResult, @PathVariable Long id, ServletResponse servletResponse) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCourse(@Valid @RequestBody Course course, BindingResult bindingResult, @PathVariable Long id, ServletResponse servletResponse) {
         if (bindingResult.hasErrors()) {
             return validate(bindingResult);
         }
@@ -68,7 +63,7 @@ public class CourseController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
         Optional<Course> courseOptional = courseService.findById(id);
         if (courseOptional.isPresent()) {
