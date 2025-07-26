@@ -3,6 +3,7 @@ package org.spring.msvc.courses.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import org.spring.msvc.courses.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,11 @@ import java.util.List;
 @Table(name = "courses")
 @Entity
 public class Course {
+
+    public Course() {
+        courseUsers = new ArrayList<>();
+        users = new ArrayList<>();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +25,19 @@ public class Course {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "course_id")
     private List<CourseUser> courseUsers;
 
-    public Course() {
-        courseUsers = new ArrayList<>();
+    @Transient
+    private List<User> users;
+
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public Long getId() {

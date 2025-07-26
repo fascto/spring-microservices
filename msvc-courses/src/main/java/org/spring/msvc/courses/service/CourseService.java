@@ -1,5 +1,6 @@
 package org.spring.msvc.courses.service;
 
+import org.spring.msvc.courses.model.User;
 import org.spring.msvc.courses.model.entity.Course;
 
 import java.util.List;
@@ -14,5 +15,12 @@ public interface CourseService {
     Course save(Course course);
 
     void delete(Long id);
+
+    // Metodos para comunicar con el otro servicio mediante una API REST.
+    Optional<User> assignCourse(User user, Long id);
+
+    Optional<User> createUser(User user, Long id);
+
+    Optional<User> removeUser(User user, Long id);
 
 }
