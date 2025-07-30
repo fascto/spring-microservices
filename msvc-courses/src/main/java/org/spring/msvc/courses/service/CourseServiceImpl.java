@@ -1,7 +1,10 @@
 package org.spring.msvc.courses.service;
 
+import org.spring.msvc.courses.clients.ClientRest;
+import org.spring.msvc.courses.model.User;
 import org.spring.msvc.courses.model.entity.Course;
 import org.spring.msvc.courses.repository.CourseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +16,11 @@ public class CourseServiceImpl implements CourseService{
 
     private CourseRepository courseRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    private ClientRest client;
+
+    public CourseServiceImpl(CourseRepository courseRepository, ClientRest client) {
         this.courseRepository = courseRepository;
+        this.client = client;
     }
 
     @Override
@@ -39,5 +45,20 @@ public class CourseServiceImpl implements CourseService{
     @Transactional
     public void delete(Long id) {
         courseRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> assignCourse(User user, Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> createUser(User user, Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> removeUser(User user, Long id) {
+        return Optional.empty();
     }
 }
