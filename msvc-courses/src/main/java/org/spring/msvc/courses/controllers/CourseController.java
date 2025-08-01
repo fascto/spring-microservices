@@ -2,6 +2,7 @@ package org.spring.msvc.courses.controllers;
 
 import jakarta.servlet.ServletResponse;
 import jakarta.validation.Valid;
+import org.spring.msvc.courses.model.User;
 import org.spring.msvc.courses.model.entity.Course;
 import org.spring.msvc.courses.repository.CourseRepository;
 import org.spring.msvc.courses.service.CourseService;
@@ -80,6 +81,14 @@ public class CourseController {
         });
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @PutMapping("/assign-user/{courseId}")
+    public ResponseEntity<?> assignUser(@RequestBody User user, @PathVariable Long courseId) {
+        Optional<User> optionalUser = courseService.assignUser(user, courseId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.get());
+    }
+
 
 }
 

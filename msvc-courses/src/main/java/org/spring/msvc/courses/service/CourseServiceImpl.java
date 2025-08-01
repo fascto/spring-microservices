@@ -3,6 +3,7 @@ package org.spring.msvc.courses.service;
 import org.spring.msvc.courses.clients.ClientRest;
 import org.spring.msvc.courses.model.User;
 import org.spring.msvc.courses.model.entity.Course;
+import org.spring.msvc.courses.model.entity.CourseUser;
 import org.spring.msvc.courses.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,18 +48,72 @@ public class CourseServiceImpl implements CourseService{
         courseRepository.deleteById(id);
     }
 
+
     @Override
-    public Optional<User> assignCourse(User user, Long id) {
+    @Transactional
+    public Optional<User> assignUser(User user, Long id) {
+
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+
+        if (optionalCourse.isPresent()) {
+            User userMsvc = client.getUser(user.getId());
+
+            Course course = optionalCourse.get();
+            CourseUser courseUser = new CourseUser();
+            courseUser.setId(userMsvc.getId());
+
+            course.addCourseUser(courseUser);
+            courseRepository.save(course);
+
+            return Optional.of(userMsvc);
+        }
         return Optional.empty();
     }
 
+
     @Override
+    @Transactional
     public Optional<User> createUser(User user, Long id) {
+
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+
+        if (optionalCourse.isPresent()) {
+            User newUserMsvc = client.createUser(user);
+
+            Course course = optionalCourse.get();
+            CourseUser courseUser = new CourseUser();
+            courseUser.setId(newUserMsvc.getId());
+
+            course.addCourseUser(courseUser);
+            courseRepository.save(course);
+
+            return Optional.of(newUserMsvc);
+        }
+
+
         return Optional.empty();
     }
 
     @Override
+    @Transactional
     public Optional<User> removeUser(User user, Long id) {
+
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+
+        if (optionalCourse.isPresent()) {
+            User userMsvc = client.getUser(user.getId());
+
+            Course course = optionalCourse.get();
+            CourseUser courseUser = new CourseUser();
+            courseUser.setId(user.getId());
+
+            course.removeCourseUser(courseUser);
+            courseRepository.save(course);
+
+            return Optional.of(userMsvc);
+        }
+
+
         return Optional.empty();
     }
 }

@@ -18,7 +18,7 @@ public interface CourseService {
     void delete(Long id);
 
     // Metodos para comunicar con el otro servicio mediante una API REST.
-    Optional<User> assignCourse(User user, Long id);
+    Optional<User> assignUser(User user, Long id);
 
     Optional<User> createUser(User user, Long id);
 
