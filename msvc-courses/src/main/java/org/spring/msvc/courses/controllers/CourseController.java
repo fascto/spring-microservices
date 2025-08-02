@@ -1,21 +1,17 @@
 package org.spring.msvc.courses.controllers;
 
+import feign.FeignException;
 import jakarta.servlet.ServletResponse;
 import jakarta.validation.Valid;
 import org.spring.msvc.courses.model.User;
 import org.spring.msvc.courses.model.entity.Course;
-import org.spring.msvc.courses.repository.CourseRepository;
 import org.spring.msvc.courses.service.CourseService;
-import org.spring.msvc.courses.service.CourseServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class CourseController {
@@ -33,7 +29,7 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourse(@PathVariable Long id) {
-        Optional<Course> courseOptional = courseService.findById(id);
+        Optional<Course> courseOptional = courseService.findByIdDetailed(id);
         if (courseOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body((courseOptional.get()));
         }
@@ -74,6 +70,52 @@ public class CourseController {
         return ResponseEntity.notFound().build();
     }
 
+    @PutMapping("/assign-user/{courseId}")
+    public ResponseEntity<?> assignUser(@RequestBody User user, @PathVariable("courseId") Long courseId) {
+        Optional<User> optionalUser = Optional.empty();
+        try  {
+            optionalUser = courseService.assignUser(user, courseId);
+        } catch (FeignException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections
+                    .singletonMap("message", "The user doesnt exist or a internal error occurred: " +
+                            e.getMessage() ));
+        }
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.get());
+        }
+        return  ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/create-user/{courseId}")
+    public ResponseEntity<?> createUser(@RequestBody User user, @PathVariable("courseId") Long courseId) {
+        Optional<User> optionalUser = Optional.empty();
+        try  { optionalUser = courseService.createUser(user, courseId);
+        } catch (FeignException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections
+                    .singletonMap("message", "Internal server error: " +
+                            e.getMessage() ));
+        }
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.get());
+        }
+        return  ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/delete-user/{courseId}")
+    public ResponseEntity<?> deleteUser(@RequestBody User user, @PathVariable Long courseId) {
+        Optional<User> optionalUser = Optional.empty();
+        try  {
+            optionalUser = courseService.removeUser(user, courseId);
+        } catch (FeignException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections
+                    .singletonMap("message", "Internal server error: " +
+                            e.getMessage() ));
+        }
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.get());
+        }
+        return  ResponseEntity.notFound().build();
+    }
     private static ResponseEntity<Map<String, String>> validate(BindingResult result) {
         Map<String, String> errors = new HashMap<>();
         result.getFieldErrors().forEach(err -> {
@@ -81,14 +123,5 @@ public class CourseController {
         });
         return ResponseEntity.badRequest().body(errors);
     }
-
-    @PutMapping("/assign-user/{courseId}")
-    public ResponseEntity<?> assignUser(@RequestBody User user, @PathVariable Long courseId) {
-        Optional<User> optionalUser = courseService.assignUser(user, courseId);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.get());
-    }
-
-
 }
 

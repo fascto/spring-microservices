@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
         Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
             return ResponseEntity.ok().body(user.get());
@@ -57,8 +57,8 @@ public class UserController {
             User userDb = userOptional.get();
             if (
                     !user.getEmail().isEmpty() &&
-                    !user.getEmail().equalsIgnoreCase(userDb.getEmail()) &&
-                    userService.findByEmail(user.getEmail()).isPresent()
+                            !user.getEmail().equalsIgnoreCase(userDb.getEmail()) &&
+                            userService.findByEmail(user.getEmail()).isPresent()
             ) {
                 return ResponseEntity.badRequest()
                         .body(Collections.singletonMap("message", "An user already registered with that email"));
@@ -83,6 +83,13 @@ public class UserController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/course-users")
+    public ResponseEntity<?> getCourseUsers( @RequestParam("idList") List<Long> idList) {
+
+        return ResponseEntity.ok(userService.findAllById(idList));
+
     }
 
     private static ResponseEntity<Map<String, String>> validate(BindingResult result) {

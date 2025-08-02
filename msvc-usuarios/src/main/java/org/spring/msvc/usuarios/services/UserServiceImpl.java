@@ -54,5 +54,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Override
+    public List<User> findAllById(Iterable<Long> idList) {
+        return (List<User>) userRepository.findAllById(idList);
+    }
+
 
 }
