@@ -28,7 +28,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourse(@PathVariable Long id) {
+    public ResponseEntity<Course> getCourse(@PathVariable("id") Long id) {
         Optional<Course> courseOptional = courseService.findByIdDetailed(id);
         if (courseOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body((courseOptional.get()));
@@ -47,7 +47,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@Valid @RequestBody Course course, BindingResult bindingResult, @PathVariable Long id, ServletResponse servletResponse) {
+    public ResponseEntity<?> updateCourse(@Valid @RequestBody Course course, BindingResult bindingResult, @PathVariable("id") Long id) {
         if (bindingResult.hasErrors()) {
             return validate(bindingResult);
         }
@@ -61,7 +61,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id) {
         Optional<Course> courseOptional = courseService.findById(id);
         if (courseOptional.isPresent()) {
             courseService.delete(courseOptional.get().getId());
@@ -117,8 +117,8 @@ public class CourseController {
         return  ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/delete-user/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
+    @DeleteMapping("/delete-user-by-id/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable("id") Long id) {
         courseService.deleteUserById(id);
         return ResponseEntity.noContent().build();
     }

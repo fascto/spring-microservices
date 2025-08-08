@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable("id") Long id) {
         if (result.hasErrors()) {
             return validate(result);
         }
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
         Optional<User> userOptional = userService.findById(id);
 
         if (userOptional.isPresent()) {
@@ -86,10 +86,8 @@ public class UserController {
     }
 
     @GetMapping("/course-users")
-    public ResponseEntity<?> getCourseUsers( @RequestParam("idList") List<Long> idList) {
-
+    public ResponseEntity<?> getCourseUsers(@RequestParam("idList") List<Long> idList) {
         return ResponseEntity.ok(userService.findAllById(idList));
-
     }
 
     private static ResponseEntity<Map<String, String>> validate(BindingResult result) {

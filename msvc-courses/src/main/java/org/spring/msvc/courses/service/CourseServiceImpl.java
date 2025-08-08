@@ -56,10 +56,10 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
+    @Transactional
     public void deleteUserById(Long id) {
         courseRepository.deleteUserById(id);
     }
-
 
     @Override
     @Transactional
