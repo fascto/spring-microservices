@@ -56,6 +56,12 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
+    public void deleteUserById(Long id) {
+        courseRepository.deleteUserById(id);
+    }
+
+
+    @Override
     @Transactional
     public Course save(Course course) {
         return courseRepository.save(course);
@@ -77,7 +83,6 @@ public class CourseServiceImpl implements CourseService{
 
             Course course = optionalCourse.get();
             CourseUser courseUser = new CourseUser();
-            // FIX: Cambiar setId por setUserId
             courseUser.setUserId(userMsvc.getId());
 
             course.addCourseUser(courseUser);
@@ -98,7 +103,6 @@ public class CourseServiceImpl implements CourseService{
 
             Course course = optionalCourse.get();
             CourseUser courseUser = new CourseUser();
-            // FIX: Cambiar setId por setUserId
             courseUser.setUserId(newUserMsvc.getId());
 
             course.addCourseUser(courseUser);
@@ -120,7 +124,6 @@ public class CourseServiceImpl implements CourseService{
 
             Course course = optionalCourse.get();
             CourseUser courseUser = new CourseUser();
-            // FIX: Cambiar setId por setUserId
             courseUser.setUserId(user.getId());
 
             course.removeCourseUser(courseUser);

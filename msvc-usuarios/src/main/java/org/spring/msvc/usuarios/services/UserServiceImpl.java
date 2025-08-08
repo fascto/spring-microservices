@@ -1,5 +1,6 @@
 package org.spring.msvc.usuarios.services;
 
+import org.spring.msvc.usuarios.clients.CourseClientRest;
 import org.spring.msvc.usuarios.models.entity.User;
 import org.spring.msvc.usuarios.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CourseClientRest courseClientRest;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, CourseClientRest courseClientRest) {
         this.userRepository = userRepository;
+        this.courseClientRest = courseClientRest;
     }
 
     @Override
@@ -24,6 +27,12 @@ public class UserServiceImpl implements UserService {
         return (List<User>) userRepository.findAll();
     }
 
+    @Override
+    @Transactional
+    public  void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+        courseClientRest.deleteUserById(id);
+    }
 
     @Transactional(readOnly = true)
     @Override
