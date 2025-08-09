@@ -20,8 +20,9 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public List<User> getUsers() {
-        return userService.findAll();
+    public Map<String, List<User>> getUsers() {
+
+        return Collections.singletonMap("users", userService.findAll());
     }
 
     @GetMapping("/{id}")
